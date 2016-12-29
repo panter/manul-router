@@ -24,8 +24,19 @@ export default class {
     this.i18n = i18n;
     this.routeConfirmCallback = null;
     this.globals = globals;
+
     this.createNavItem = CreateNavItem(this);
+
     disableFlowRouterClickDetection({ FlowRouter, Meteor });
+  }
+
+  createNavItemForCurrentPage(newParams = {}, newQueryParams = {}) {
+    const current = this.FlowRouter.current();
+    return this.createNavItem({
+      routeName: current.route.path,
+      params: { ...current.params, ...newParams },
+      queryParams: { ...current.queryParams, ...newQueryParams },
+    });
   }
 
 

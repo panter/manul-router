@@ -1,5 +1,6 @@
 import tape from 'tape';
 import ManulRouter from '../src/manul-router';
+import _ from 'lodash';
 /* eslint no-shadow: 0*/
 
 const getMocks = () => ({
@@ -345,16 +346,12 @@ tape('test createLocaleRoutesGroup', (t) => {
   const { Meteor, FlowRouter, i18n } = getMocks();
   t.plan(3);
   const group = {};
-  let router;
   FlowRouter.group = (args) => {
-    t.deepEquals(args, {
-      prefix: '/:locale?',
-      triggersEnter: [router._setLocaleByRoute],
-    });
+    t.equals(args.prefix, '/:locale?');
     t.pass('calls FlowRouter.group');
     return group;
   };
-  router = new ManulRouter({ FlowRouter, Meteor, i18n });
+  const router = new ManulRouter({ FlowRouter, Meteor, i18n });
 
   const localeGroup = router.createLocaleRoutesGroup();
   t.equal(localeGroup, group, 'returns group');
@@ -409,5 +406,57 @@ tape('test _setLocaleByRoute', (t) => {
       t.pass('it does call stop');
     };
     router._setLocaleByRoute({ params: { locale: 'it_IT' } }, redirect, stop);
+  });
+});
+
+
+tape('test createNavItem', (t) => {
+  const nav = {
+    label: 'myLabel',
+    routeName: 'myRoute',
+    disabled: false,
+    params: {
+      myPathParam: 'mypathValue',
+    },
+    queryParams: {
+      myQueryParam: 'myQueryValue',
+    },
+  };
+  t.test('creates inactive item with href', (t) => {
+    const { Meteor, FlowRouter, i18n } = getMocks();
+    t.plan(4);
+
+    const router = new ManulRouter({ FlowRouter, Meteor, i18n });
+    const navItem = router.createNavItem(nav);
+    t.equals(navItem.href, '/to/my/path'); // from FlowRouter
+    t.equals(navItem.active, false);
+    t.equals(navItem.childActive, false);
+    t.equals(_.isFunction(navItem.onClick), true);
+  });
+
+  t.test('is active if current path is given path', (t) => {
+    const { Meteor, FlowRouter, i18n } = getMocks();
+    t.plan(3);
+    FlowRouter.current = () => ({
+      path: '/to/my/path',
+    });
+    const router = new ManulRouter({ FlowRouter, Meteor, i18n });
+    const navItem = router.createNavItem(nav);
+    t.equals(navItem.href, '/to/my/path'); // from FlowRouter
+    t.equals(navItem.active, true);
+    t.equals(navItem.childActive, false);
+  });
+
+  t.test('childActive is true if a child path is given', (t) => {
+    const { Meteor, FlowRouter, i18n } = getMocks();
+    t.plan(3);
+    FlowRouter.current = () => ({
+      path: '/to/my/path/i/am/a/child',
+    });
+    const router = new ManulRouter({ FlowRouter, Meteor, i18n });
+    const navItem = router.createNavItem(nav);
+    t.equals(navItem.href, '/to/my/path'); // from FlowRouter
+    t.equals(navItem.active, false);
+    t.equals(navItem.childActive, true);
   });
 });

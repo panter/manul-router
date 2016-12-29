@@ -17,11 +17,12 @@ export default manulRouter => (nav) => {
   );
 
   const currentPath = manulRouter.getCurrentPath();
+  const active = currentPath === path;
   const navItem = {
     ...nav,
     href: path,
-    active: currentPath === path,
-    childActive: _.startsWith(currentPath, path),
+    active,
+    childActive: !active && _.startsWith(currentPath, path),
     label,
   };
   const go = () => manulRouter.go(navItem);
