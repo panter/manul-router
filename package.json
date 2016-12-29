@@ -5,14 +5,14 @@
   "author": {
     "name": "Marco Wettstein",
     "email": "maw@panter.ch",
-    "url": "https://github.com/macrozone"
+    "url": "www.panter.ch"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git://github.com/macrozone/manul-router.git"
+    "url": "git://github.com/panter/manul-router.git"
   },
-  "bugs": "https://github.com/macrozone/manul-router/issues",
+  "bugs": "https://github.com/panter/manul-router/issues",
   "dependencies": {
     "babel-runtime": "^5.8.25",
     "lodash": "^4.17.3"

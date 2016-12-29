@@ -128,6 +128,21 @@ export default class {
       });
   }
 
+  createLocaleRoutesGroup(baseRoutes = this.FlowRouter) {
+    return baseRoutes.group({
+      prefix: '/:locale?',
+      triggersEnter: [this._setLocaleByRoute],
+    });
+  }
+
+  _setLocaleByRoute({ params: { locale } }, redirect, stop) {
+    if (this.i18n.supports(locale)) {
+      this.i18n.setLocale(locale);
+    } else {
+      this.setParams({ locale: this.i18n.getFallbackLocale(locale) });
+      stop();
+    }
+  }
 
   redirect(...args) {
     const nav = this._wrapAsNavItemIfneeded(args);
