@@ -33,7 +33,7 @@ export default class {
   createNavItemForCurrentPage(newParams = {}, newQueryParams = {}) {
     const current = this.FlowRouter.current();
     return this.createNavItem({
-      routeName: current.route.path,
+      routeName: current.route.path, // this is the route definition / path with placeholders!
       params: { ...current.params, ...newParams },
       queryParams: { ...current.queryParams, ...newQueryParams },
     });

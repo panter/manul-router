@@ -460,3 +460,33 @@ tape('test createNavItem', (t) => {
     t.equals(navItem.childActive, true);
   });
 });
+
+
+tape('test createNavItemForCurrentPage', (t) => {
+  t.test('it creates a nav item with merged params and queryParams', (t) => {
+    const { Meteor, FlowRouter, i18n } = getMocks();
+    t.plan(5);
+    FlowRouter.current = () => ({
+      path: '/to/my/current/path',
+      route: {
+        path: '/to/my/current/path',
+      },
+      params: {
+        myCurrentParam: 'myValue',
+        otherParam: 'currentValue',
+      },
+      queryParams: {
+        page: 1,
+      },
+    });
+    FlowRouter.path = () => '/to/my/current/path';
+    const router = new ManulRouter({ FlowRouter, Meteor, i18n });
+    const navItem = router.createNavItemForCurrentPage({ locale: 'it', otherParam: 'newValue' }, { page: 2 });
+    t.equals(navItem.href, '/to/my/current/path');
+    t.equals(navItem.active, true);
+    t.equals(navItem.childActive, false);
+    t.deepEqual(navItem.params, { myCurrentParam: 'myValue', locale: 'it', otherParam: 'newValue' });
+
+    t.deepEqual(navItem.queryParams, { page: 2 });
+  });
+});
