@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/manul-router.js"],"names":[],"mappings":";;;;;;;;;qBAIe,EAEd","file":"manul-router.js","sourcesContent":["/**\n * Copyright (c) 2016, Marco Wettstein\n */\n\nexport default {\n\n}\n"]}
