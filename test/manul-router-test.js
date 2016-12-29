@@ -1,5 +1,5 @@
 import tape from 'tape';
-import ManulRouter from '../src/manul_router';
+import ManulRouter from '../src/manul-router';
 /* eslint no-shadow: 0*/
 
 const getMocks = () => ({
@@ -338,5 +338,76 @@ tape('test redirect', (t) => {
     const router = new ManulRouter({ FlowRouter, Meteor, i18n });
 
     router.redirect(navItem);
+  });
+});
+
+tape('test createLocaleRoutesGroup', (t) => {
+  const { Meteor, FlowRouter, i18n } = getMocks();
+  t.plan(3);
+  const group = {};
+  let router;
+  FlowRouter.group = (args) => {
+    t.deepEquals(args, {
+      prefix: '/:locale?',
+      triggersEnter: [router._setLocaleByRoute],
+    });
+    t.pass('calls FlowRouter.group');
+    return group;
+  };
+  router = new ManulRouter({ FlowRouter, Meteor, i18n });
+
+  const localeGroup = router.createLocaleRoutesGroup();
+  t.equal(localeGroup, group, 'returns group');
+});
+
+/**
+this is an internal function that is the localeGroup
+**/
+tape('test _setLocaleByRoute', (t) => {
+  t.test('it sets locale on i18n if it supports it', (t) => {
+    const { Meteor, FlowRouter, i18n } = getMocks();
+    t.plan(2);
+
+    i18n.supports = (locale) => {
+      t.equals(locale, 'it_IT', 'asks i18n if locale is supported');
+      return true;
+    };
+    i18n.setLocale = (locale) => {
+      t.equals(locale, 'it_IT', 'sets locale on i18n');
+    };
+    const router = new ManulRouter({ FlowRouter, Meteor, i18n });
+    const redirect = () => {
+      t.fail('does not call this param');
+    };
+    const stop = () => {
+      t.fail('does not call stop');
+    };
+    router._setLocaleByRoute({ params: { locale: 'it_IT' } }, redirect, stop);
+  });
+
+  t.test('it sets fallback locale if locale is not supported', (t) => {
+    const { Meteor, FlowRouter, i18n } = getMocks();
+    t.plan(4);
+
+    i18n.supports = (locale) => {
+      t.equals(locale, 'it_IT', 'asks i18n if locale is supported');
+      return false;
+    };
+    i18n.getFallbackLocale = () => {
+      t.pass('calls i18n.getFallbackLocale');
+      return 'de_CH';
+    };
+
+    FlowRouter.setParams = (params) => {
+      t.deepEquals(params, { locale: 'de_CH' }, 'it calls FlowRouter.setParams with fallback locale');
+    };
+    const router = new ManulRouter({ FlowRouter, Meteor, i18n });
+    const redirect = () => {
+      t.fail('does not call this param');
+    };
+    const stop = () => {
+      t.pass('it does call stop');
+    };
+    router._setLocaleByRoute({ params: { locale: 'it_IT' } }, redirect, stop);
   });
 });
