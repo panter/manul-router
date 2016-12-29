@@ -172,6 +172,28 @@ var _default = (function () {
       });
     }
   }, {
+    key: 'createLocaleRoutesGroup',
+    value: function createLocaleRoutesGroup() {
+      var baseRoutes = arguments.length <= 0 || arguments[0] === undefined ? this.FlowRouter : arguments[0];
+
+      return baseRoutes.group({
+        prefix: '/:locale?',
+        triggersEnter: [this._setLocaleByRoute.bind(this)]
+      });
+    }
+  }, {
+    key: '_setLocaleByRoute',
+    value: function _setLocaleByRoute(_ref2, redirect, stop) {
+      var locale = _ref2.params.locale;
+
+      if (this.i18n.supports(locale)) {
+        this.i18n.setLocale(locale);
+      } else {
+        this.setParams({ locale: this.i18n.getFallbackLocale(locale) });
+        stop();
+      }
+    }
+  }, {
     key: 'redirect',
     value: function redirect() {
       for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {

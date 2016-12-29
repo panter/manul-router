@@ -131,7 +131,7 @@ export default class {
   createLocaleRoutesGroup(baseRoutes = this.FlowRouter) {
     return baseRoutes.group({
       prefix: '/:locale?',
-      triggersEnter: [this._setLocaleByRoute],
+      triggersEnter: [this._setLocaleByRoute.bind(this)],
     });
   }
 
