@@ -53,15 +53,39 @@ var _default = (function () {
     this.i18n = i18n;
     this.routeConfirmCallback = null;
     this.globals = globals;
+    this.Meteor = Meteor;
     this.createNavItem = (0, _create_nav_item2['default'])(this);
+
     (0, _disable_flowrouter_click_detection2['default'])({ FlowRouter: FlowRouter, Meteor: Meteor });
   }
 
-  /**
-  get the current path (non-reactive)
-  **/
-
   _createClass(_default, [{
+    key: 'createNavItemForCurrentPage',
+    value: function createNavItemForCurrentPage() {
+      var newParams = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+      var newQueryParams = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
+      var current = this.FlowRouter.current();
+      return this.createNavItem({
+        routeName: current.route.path, // this is the route definition / path with placeholders!
+        params: _extends({}, current.params, newParams),
+        queryParams: _extends({}, current.queryParams, newQueryParams)
+      });
+    }
+
+    /**
+      current route name (reactive)
+    **/
+  }, {
+    key: 'getRouteName',
+    value: function getRouteName() {
+      return this.FlowRouter.getRouteName();
+    }
+
+    /**
+    get the current path (non-reactive)
+    **/
+  }, {
     key: 'getCurrentPath',
     value: function getCurrentPath() {
       return this.FlowRouter.current().path;
@@ -200,8 +224,16 @@ var _default = (function () {
         args[_key2] = arguments[_key2];
       }
 
-      var nav = this._wrapAsNavItemIfneeded(args);
-      this.FlowRouter.redirect(nav.href);
+      // on ios cordova reidrect throws a security error.
+      // we skip this on ios (it has no back button anyway, so no need for redirect)
+      /* global window */
+      /* global document */
+      if (this.Meteor.isCordova && window.cordova.platformId === 'ios') {
+        this.go.apply(this, args);
+      } else {
+        var nav = this._wrapAsNavItemIfneeded(args);
+        this.FlowRouter.redirect(nav.href);
+      }
     }
   }, {
     key: '_wrapAsNavItemIfneeded',

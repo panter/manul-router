@@ -24,7 +24,7 @@ export default class {
     this.i18n = i18n;
     this.routeConfirmCallback = null;
     this.globals = globals;
-
+    this.Meteor = Meteor;
     this.createNavItem = CreateNavItem(this);
 
     disableFlowRouterClickDetection({ FlowRouter, Meteor });
@@ -39,7 +39,12 @@ export default class {
     });
   }
 
-
+  /**
+    current route name (reactive)
+  **/
+  getRouteName() {
+    return this.FlowRouter.getRouteName();
+  }
   /**
   get the current path (non-reactive)
   **/
@@ -156,8 +161,16 @@ export default class {
   }
 
   redirect(...args) {
-    const nav = this._wrapAsNavItemIfneeded(args);
-    this.FlowRouter.redirect(nav.href);
+    // on ios cordova reidrect throws a security error.
+    // we skip this on ios (it has no back button anyway, so no need for redirect)
+    /* global window */
+    /* global document */
+    if (this.Meteor.isCordova && window.cordova.platformId === 'ios') {
+      this.go(...args);
+    } else {
+      const nav = this._wrapAsNavItemIfneeded(args);
+      this.FlowRouter.redirect(nav.href);
+    }
   }
 
   _wrapAsNavItemIfneeded(args) {

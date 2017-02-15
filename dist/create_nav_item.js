@@ -25,10 +25,11 @@ exports['default'] = function (manulRouter) {
     var path = routeName && !disabled ? manulRouter.getPath(routeName, params, queryParams) : null;
 
     var currentPath = manulRouter.getCurrentPath();
+    var active = currentPath === path;
     var navItem = _extends({}, nav, {
       href: path,
-      active: currentPath === path,
-      childActive: _lodash2['default'].startsWith(currentPath, path),
+      active: active,
+      childActive: !active && _lodash2['default'].startsWith(currentPath, path),
       label: label
     });
     var go = function go() {

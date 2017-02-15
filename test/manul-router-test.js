@@ -25,6 +25,17 @@ const getMocks = () => ({
   },
 });
 
+tape('test getRouteName', (t) => {
+  const { Meteor, FlowRouter } = getMocks();
+  t.plan(2);
+  FlowRouter.current = () => {
+    t.pass('calls FlowRouter.getRouteName');
+    return 'myRoute';
+  };
+  const router = new ManulRouter({ FlowRouter, Meteor, i18n: {} });
+  const routeName = router.getRouteName();
+  t.equal(routeName, 'myRoute', 'returns current routeName');
+});
 tape('test getCurrentPath', (t) => {
   const { Meteor, FlowRouter } = getMocks();
   t.plan(2);
