@@ -1,7 +1,7 @@
 {
   "name": "@panter/manul-router",
   "description": "",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "author": {
     "name": "Marco Wettstein",
     "email": "maw@panter.ch",
@@ -13,7 +13,7 @@
     "url": "git://github.com/panter/manul-router.git"
   },
   "bugs": "https://github.com/panter/manul-router/issues",
-  "dependencies": {
+  "peerDependencies": {
     "babel-runtime": "^5.8.25",
     "lodash": "^4.17.3"
   },
