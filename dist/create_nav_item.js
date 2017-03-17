@@ -1,34 +1,40 @@
 'use strict';
 
-var _extends = require('babel-runtime/helpers/extends')['default'];
-
-var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default')['default'];
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _lodash = require('lodash');
+var _defer2 = require('lodash/defer');
 
-var _lodash2 = _interopRequireDefault(_lodash);
+var _defer3 = _interopRequireDefault(_defer2);
+
+var _startsWith2 = require('lodash/startsWith');
+
+var _startsWith3 = _interopRequireDefault(_startsWith2);
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // use this from context()
 
-exports['default'] = function (manulRouter) {
+exports.default = function (manulRouter) {
   return function (nav) {
-    var label = nav.label;
-    var routeName = nav.routeName;
-    var disabled = nav.disabled;
-    var params = nav.params;
-    var queryParams = nav.queryParams;
+    var label = nav.label,
+        routeName = nav.routeName,
+        disabled = nav.disabled,
+        params = nav.params,
+        queryParams = nav.queryParams;
+
 
     var path = routeName && !disabled ? manulRouter.getPath(routeName, params, queryParams) : null;
 
     var currentPath = manulRouter.getCurrentPath();
+    var active = currentPath === path;
     var navItem = _extends({}, nav, {
       href: path,
-      active: currentPath === path,
-      childActive: _lodash2['default'].startsWith(currentPath, path),
+      active: active,
+      childActive: !active && (0, _startsWith3.default)(currentPath, path),
       label: label
     });
     var go = function go() {
@@ -41,7 +47,7 @@ exports['default'] = function (manulRouter) {
       if (navItem.active) {
         return;
       }
-      _lodash2['default'].defer(go);
+      (0, _defer3.default)(go);
     };
 
     return _extends({
@@ -53,6 +59,4 @@ exports['default'] = function (manulRouter) {
     });
   };
 };
-
-module.exports = exports['default'];
 //# sourceMappingURL=create_nav_item.js.map

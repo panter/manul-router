@@ -6,7 +6,9 @@ We implemented it to hide FlowRouter and make a transition to react-router more 
 
 It also provides a function to create navigation-items that can be used to create navigations.
 
+## Install
 
+`npm install --save @panter/manul-router`
 
 ## Features
 

@@ -1,20 +1,24 @@
 'use strict';
 
-var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default')['default'];
-
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _lodash = require('lodash');
+var _assign2 = require('lodash/assign');
 
-var _lodash2 = _interopRequireDefault(_lodash);
+var _assign3 = _interopRequireDefault(_assign2);
+
+var _isObject2 = require('lodash/isObject');
+
+var _isObject3 = _interopRequireDefault(_isObject2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /* eslint no-param-reassign: 0*/
 
-exports['default'] = function (_ref) {
-  var FlowRouter = _ref.FlowRouter;
-  var Meteor = _ref.Meteor;
+exports.default = function (_ref) {
+  var FlowRouter = _ref.FlowRouter,
+      Meteor = _ref.Meteor;
 
   // patch FlowRouter
   // because of https://github.com/kadirahq/flow-router/issues/705
@@ -27,16 +31,14 @@ exports['default'] = function (_ref) {
         args[_key] = arguments[_key];
       }
 
-      if (_lodash2['default'].isObject(args[0])) {
+      if ((0, _isObject3.default)(args[0])) {
         args[0].click = false;
       }
       return oldPage.call.apply(oldPage, [this].concat(args));
     };
-    _lodash2['default'].assign(FlowRouter._page, oldPage); // copy properties
+    (0, _assign3.default)(FlowRouter._page, oldPage); // copy properties
 
     FlowRouter.initialize();
   });
 };
-
-module.exports = exports['default'];
 //# sourceMappingURL=disable_flowrouter_click_detection.js.map
