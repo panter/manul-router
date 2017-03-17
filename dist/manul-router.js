@@ -4,6 +4,22 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _promise = require('babel-runtime/core-js/promise');
+
+var _promise2 = _interopRequireDefault(_promise);
+
+var _extends2 = require('babel-runtime/helpers/extends');
+
+var _extends3 = _interopRequireDefault(_extends2);
+
+var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = require('babel-runtime/helpers/createClass');
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
 var _has2 = require('lodash/has');
 
 var _has3 = _interopRequireDefault(_has2);
@@ -24,10 +40,6 @@ var _flatten2 = require('lodash/flatten');
 
 var _flatten3 = _interopRequireDefault(_flatten2);
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 var _create_nav_item = require('./create_nav_item');
 
 var _create_nav_item2 = _interopRequireDefault(_create_nav_item);
@@ -37,8 +49,6 @@ var _disable_flowrouter_click_detection = require('./disable_flowrouter_click_de
 var _disable_flowrouter_click_detection2 = _interopRequireDefault(_disable_flowrouter_click_detection);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
 
@@ -59,8 +69,7 @@ var _class = function () {
         Meteor = _ref.Meteor,
         i18n = _ref.i18n;
     var globals = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-    _classCallCheck(this, _class);
+    (0, _classCallCheck3.default)(this, _class);
 
     this.FlowRouter = FlowRouter;
     this.i18n = i18n;
@@ -72,7 +81,7 @@ var _class = function () {
     (0, _disable_flowrouter_click_detection2.default)({ FlowRouter: FlowRouter, Meteor: Meteor });
   }
 
-  _createClass(_class, [{
+  (0, _createClass3.default)(_class, [{
     key: 'createNavItemForCurrentPage',
     value: function createNavItemForCurrentPage() {
       var newParams = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -81,8 +90,8 @@ var _class = function () {
       var current = this.FlowRouter.current();
       return this.createNavItem({
         routeName: current.route.path, // this is the route definition / path with placeholders!
-        params: _extends({}, current.params, newParams),
-        queryParams: _extends({}, current.queryParams, newQueryParams)
+        params: (0, _extends3.default)({}, current.params, newParams),
+        queryParams: (0, _extends3.default)({}, current.queryParams, newQueryParams)
       });
     }
 
@@ -162,7 +171,7 @@ var _class = function () {
   }, {
     key: 'getPath',
     value: function getPath(routeName, params, queryParams) {
-      return this.FlowRouter.path(routeName, _extends({ locale: this.i18n.getLocale() }, params), queryParams).replace(/%252F/g, '/');
+      return this.FlowRouter.path(routeName, (0, _extends3.default)({ locale: this.i18n.getLocale() }, params), queryParams).replace(/%252F/g, '/');
     }
 
     /**
@@ -188,7 +197,7 @@ var _class = function () {
       var allOnRoutes = (0, _flatten3.default)([nav.onRoute, this.globals.onRoute]);
       allOnRoutes.reduce(function (promiseChain, onRoute) {
         return promiseChain.then(function () {
-          return new Promise(function (next) {
+          return new _promise2.default(function (next) {
             if ((0, _isFunction3.default)(onRoute)) {
               // onRoute can either return true/ false
               // or call its second arg (next) with no value or true
@@ -204,7 +213,7 @@ var _class = function () {
             }
           });
         });
-      }, Promise.resolve()).then(function () {
+      }, _promise2.default.resolve()).then(function () {
         _this.FlowRouter.go(nav.href);
         // check if last arg is a callback function and execute
         if ((0, _isFunction3.default)((0, _last3.default)(args))) {
@@ -267,7 +276,6 @@ var _class = function () {
       });
     }
   }]);
-
   return _class;
 }();
 
