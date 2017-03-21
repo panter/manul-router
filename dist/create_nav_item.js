@@ -4,6 +4,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends2 = require('babel-runtime/helpers/extends');
+
+var _extends3 = _interopRequireDefault(_extends2);
+
 var _defer2 = require('lodash/defer');
 
 var _defer3 = _interopRequireDefault(_defer2);
@@ -11,8 +15,6 @@ var _defer3 = _interopRequireDefault(_defer2);
 var _startsWith2 = require('lodash/startsWith');
 
 var _startsWith3 = _interopRequireDefault(_startsWith2);
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -31,7 +33,7 @@ exports.default = function (manulRouter) {
 
     var currentPath = manulRouter.getCurrentPath();
     var active = currentPath === path;
-    var navItem = _extends({}, nav, {
+    var navItem = (0, _extends3.default)({}, nav, {
       href: path,
       active: active,
       childActive: !active && (0, _startsWith3.default)(currentPath, path),
@@ -50,7 +52,7 @@ exports.default = function (manulRouter) {
       (0, _defer3.default)(go);
     };
 
-    return _extends({
+    return (0, _extends3.default)({
       go: go
     }, navItem, {
       // overridable, if not falsy, spreading navItem after this does not handle this correctly
