@@ -40,22 +40,24 @@ export default class {
   }
 
   /**
-    current route name (reactive)
+    current route name tracker-reactive
   **/
   getRouteName() {
     return this.FlowRouter.getRouteName();
   }
   /**
-  get the current path (non-reactive)
+  get the current path tracker-reactive
   **/
-  getCurrentPath() {
+  getCurrentPath(reactive = true) {
+    if (reactive) this.FlowRouter.watchPathChange();
     return this.FlowRouter.current().path;
   }
 
   /**
-  get the current route defininition (non-reactive)
+  get the current route defininition tracker-reactive
   **/
-  getCurrentRoute() {
+  getCurrentRoute(reactive = true) {
+    if (reactive) this.FlowRouter.watchPathChange();
     return this.FlowRouter.current().route;
   }
   /**
