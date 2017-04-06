@@ -96,7 +96,7 @@ var _class = function () {
     }
 
     /**
-      current route name (reactive)
+      current route name tracker-reactive
     **/
 
   }, {
@@ -105,22 +105,28 @@ var _class = function () {
       return this.FlowRouter.getRouteName();
     }
     /**
-    get the current path (non-reactive)
+    get the current path tracker-reactive
     **/
 
   }, {
     key: 'getCurrentPath',
     value: function getCurrentPath() {
+      var reactive = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
+      if (reactive) this.FlowRouter.watchPathChange();
       return this.FlowRouter.current().path;
     }
 
     /**
-    get the current route defininition (non-reactive)
+    get the current route defininition tracker-reactive
     **/
 
   }, {
     key: 'getCurrentRoute',
     value: function getCurrentRoute() {
+      var reactive = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
+      if (reactive) this.FlowRouter.watchPathChange();
       return this.FlowRouter.current().route;
     }
     /**
