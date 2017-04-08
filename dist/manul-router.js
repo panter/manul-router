@@ -256,11 +256,9 @@ var _class = function () {
         args[_key2] = arguments[_key2];
       }
 
-      // on ios cordova reidrect throws a security error.
-      // we skip this on ios (it has no back button anyway, so no need for redirect)
-      /* global window */
-      /* global document */
-      if (this.Meteor.isCordova && window.cordova.platformId === 'ios') {
+      // on ios and android cordova reidrect throws a security error.
+      // we skip this on both ios and android
+      if (this.Meteor.isCordova) {
         this.go.apply(this, args);
       } else {
         var nav = this._wrapAsNavItemIfneeded(args);
