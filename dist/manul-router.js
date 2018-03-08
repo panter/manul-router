@@ -177,7 +177,10 @@ var _class = function () {
   }, {
     key: 'getPath',
     value: function getPath(routeName, params, queryParams) {
-      return this.FlowRouter.path(routeName, (0, _extends3.default)({ locale: this.i18n.getLocale() }, params), queryParams).replace(/%252F/g, '/');
+      return this.FlowRouter.path(routeName, (0, _extends3.default)({ locale: this.i18n.getLocale() }, params), queryParams
+      // flow router does escape "/" in the route-params, but we like to keep them
+      // FIXME: may break cases where / is in a queryParam
+      ).replace(/%252F/g, '/');
     }
 
     /**
@@ -242,7 +245,9 @@ var _class = function () {
     value: function _setLocaleByRoute(_ref2, redirect, stop) {
       var locale = _ref2.params.locale;
 
-      if (this.i18n.supports(locale)) {
+      if (!locale) {
+        // do nothing, let it as default. usually this is root page
+      } else if (this.i18n.supports(locale)) {
         this.i18n.setLocale(locale);
       } else {
         this.setParams({ locale: this.i18n.getFallbackLocale(locale) });

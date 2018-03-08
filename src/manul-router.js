@@ -1,9 +1,7 @@
 import _ from 'lodash';
 
 import CreateNavItem from './create_nav_item';
-import disableFlowRouterClickDetection from
-  './disable_flowrouter_click_detection';
-
+import disableFlowRouterClickDetection from './disable_flowrouter_click_detection';
 
 /**
 
@@ -119,25 +117,27 @@ export default class {
   go(...args) {
     const nav = this._wrapAsNavItemIfneeded(args);
     const allOnRoutes = _.flatten([nav.onRoute, this.globals.onRoute]);
-    allOnRoutes.reduce(
-        (promiseChain, onRoute) => promiseChain.then(
-          () => new Promise((next) => {
-            if (_.isFunction(onRoute)) {
-              // onRoute can either return true/ false
-              // or call its second arg (next) with no value or true
-              const should = onRoute(
-                nav,
-                (s = true) => (s && next()),
-              );
-              if (_.isBoolean(should) && should) {
-                next();
-              }
-            } else {
-              next();
-            }
-          }),
-        ), Promise.resolve(),
-      ).then(() => {
+    allOnRoutes
+      .reduce(
+        (promiseChain, onRoute) =>
+          promiseChain.then(
+            () =>
+              new Promise((next) => {
+                if (_.isFunction(onRoute)) {
+                  // onRoute can either return true/ false
+                  // or call its second arg (next) with no value or true
+                  const should = onRoute(nav, (s = true) => s && next());
+                  if (_.isBoolean(should) && should) {
+                    next();
+                  }
+                } else {
+                  next();
+                }
+              }),
+          ),
+        Promise.resolve(),
+      )
+      .then(() => {
         this.FlowRouter.go(nav.href);
         // check if last arg is a callback function and execute
         if (_.isFunction(_.last(args))) {
@@ -154,7 +154,9 @@ export default class {
   }
 
   _setLocaleByRoute({ params: { locale } }, redirect, stop) {
-    if (this.i18n.supports(locale)) {
+    if (!locale) {
+      // do nothing, let it as default. usually this is root page
+    } else if (this.i18n.supports(locale)) {
       this.i18n.setLocale(locale);
     } else {
       this.setParams({ locale: this.i18n.getFallbackLocale(locale) });
