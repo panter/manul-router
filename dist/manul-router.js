@@ -274,7 +274,6 @@ var _class = function () {
         args[_key2] = arguments[_key2];
       }
 
-      console.log('redirect', args);
       // on ios and android cordova reidrect throws a security error.
       // we skip this on both ios and android
       if (this.Meteor.isCordova) {

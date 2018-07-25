@@ -190,7 +190,6 @@ export default class {
   }
 
   redirect(...args) {
-    console.log('redirect', args);
     // on ios and android cordova reidrect throws a security error.
     // we skip this on both ios and android
     if (this.Meteor.isCordova) {
