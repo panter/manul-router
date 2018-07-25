@@ -20,25 +20,38 @@ exports.default = function (_ref) {
   var FlowRouter = _ref.FlowRouter,
       Meteor = _ref.Meteor;
 
-  // patch FlowRouter
-  // because of https://github.com/kadirahq/flow-router/issues/705
-  FlowRouter._askedToWait = true;
+  FlowRouter.wait();
   FlowRouter._linkDetectionDisabled = true;
-  Meteor.startup(function () {
-    var oldPage = FlowRouter._page;
-    FlowRouter._page = function _page() {
-      for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-        args[_key] = arguments[_key];
-      }
+  /* global Package*/
 
-      if ((0, _isObject2.default)(args[0])) {
-        args[0].click = false;
-      }
-      return oldPage.call.apply(oldPage, [this].concat(args));
-    };
-    (0, _assign2.default)(FlowRouter._page, oldPage); // copy properties
+  if (Package['ostrio:flow-router-extra']) {
+    // probably the "new" flow router
+    Meteor.startup(function () {
+      FlowRouter.initialize({
+        page: {
+          link: false
+        }
+      });
+    });
+  } else {
+    // patch FlowRouter
+    // because of https://github.com/kadirahq/flow-router/issues/705
+    Meteor.startup(function () {
+      var oldPage = FlowRouter._page;
+      FlowRouter._page = function _page() {
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+          args[_key] = arguments[_key];
+        }
 
-    FlowRouter.initialize();
-  });
+        if ((0, _isObject2.default)(args[0])) {
+          args[0].click = false;
+        }
+        return oldPage.call.apply(oldPage, [this].concat(args));
+      };
+      (0, _assign2.default)(FlowRouter._page, oldPage); // copy properties
+
+      FlowRouter.initialize();
+    });
+  }
 };
 //# sourceMappingURL=disable_flowrouter_click_detection.js.map
