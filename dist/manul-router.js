@@ -20,25 +20,25 @@ var _createClass2 = require('babel-runtime/helpers/createClass');
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
-var _has2 = require('lodash/has');
+var _flatten = require('lodash/flatten');
 
-var _has3 = _interopRequireDefault(_has2);
+var _flatten2 = _interopRequireDefault(_flatten);
 
-var _last2 = require('lodash/last');
+var _last = require('lodash/last');
 
-var _last3 = _interopRequireDefault(_last2);
+var _last2 = _interopRequireDefault(_last);
 
-var _isBoolean2 = require('lodash/isBoolean');
+var _isBoolean = require('lodash/isBoolean');
 
-var _isBoolean3 = _interopRequireDefault(_isBoolean2);
+var _isBoolean2 = _interopRequireDefault(_isBoolean);
 
-var _isFunction2 = require('lodash/isFunction');
+var _has = require('lodash/has');
 
-var _isFunction3 = _interopRequireDefault(_isFunction2);
+var _has2 = _interopRequireDefault(_has);
 
-var _flatten2 = require('lodash/flatten');
+var _isFunction = require('lodash/isFunction');
 
-var _flatten3 = _interopRequireDefault(_flatten2);
+var _isFunction2 = _interopRequireDefault(_isFunction);
 
 var _create_nav_item = require('./create_nav_item');
 
@@ -77,7 +77,20 @@ var _class = function () {
     this.globals = globals;
     this.Meteor = Meteor;
     this.createNavItem = (0, _create_nav_item2.default)(this);
+    // path bad path escaping when setting params
+    // see https://github.com/kadirahq/flow-router/issues/601#issuecomment-327393055
+    this.FlowRouter.go = function (pathDef, fields, queryParams) {
+      var path = this.path(pathDef, fields, queryParams);
+      var useReplaceState = this.env.replaceState.get();
+      var badSlash = /%252F/g;
+      path = path.replace(badSlash, '/');
 
+      if (useReplaceState) {
+        this._page.replace(path);
+      } else {
+        this._page(path);
+      }
+    };
     (0, _disable_flowrouter_click_detection2.default)({ FlowRouter: FlowRouter, Meteor: Meteor });
   }
 
@@ -191,7 +204,7 @@ var _class = function () {
       This will trigger route-callbacks (onRoute)
      you can additionally pass a callback as the last param,
     this will be called after all onRoute-Callbacks has been resolved
-      **/
+     **/
 
   }, {
     key: 'go',
@@ -203,18 +216,18 @@ var _class = function () {
       }
 
       var nav = this._wrapAsNavItemIfneeded(args);
-      var allOnRoutes = (0, _flatten3.default)([nav.onRoute, this.globals.onRoute]);
+      var allOnRoutes = (0, _flatten2.default)([nav.onRoute, this.globals.onRoute]);
       allOnRoutes.reduce(function (promiseChain, onRoute) {
         return promiseChain.then(function () {
           return new _promise2.default(function (next) {
-            if ((0, _isFunction3.default)(onRoute)) {
+            if ((0, _isFunction2.default)(onRoute)) {
               // onRoute can either return true/ false
               // or call its second arg (next) with no value or true
               var should = onRoute(nav, function () {
                 var s = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
                 return s && next();
               });
-              if ((0, _isBoolean3.default)(should) && should) {
+              if ((0, _isBoolean2.default)(should) && should) {
                 next();
               }
             } else {
@@ -225,8 +238,8 @@ var _class = function () {
       }, _promise2.default.resolve()).then(function () {
         _this.FlowRouter.go(nav.href);
         // check if last arg is a callback function and execute
-        if ((0, _isFunction3.default)((0, _last3.default)(args))) {
-          (0, _last3.default)(args)();
+        if ((0, _isFunction2.default)((0, _last2.default)(args))) {
+          (0, _last2.default)(args)();
         }
       });
     }
@@ -261,6 +274,7 @@ var _class = function () {
         args[_key2] = arguments[_key2];
       }
 
+      console.log('redirect', args);
       // on ios and android cordova reidrect throws a security error.
       // we skip this on both ios and android
       if (this.Meteor.isCordova) {
@@ -274,7 +288,7 @@ var _class = function () {
     key: '_wrapAsNavItemIfneeded',
     value: function _wrapAsNavItemIfneeded(args) {
       var firstArg = args[0];
-      if ((0, _has3.default)(firstArg, 'href')) {
+      if ((0, _has2.default)(firstArg, 'href')) {
         // is already a nav item
         return args[0];
       }

@@ -1,5 +1,5 @@
-
-import _ from 'lodash';
+import assign from 'lodash/assign';
+import isObject from 'lodash/isObject';
 
 /* eslint no-param-reassign: 0*/
 
@@ -11,12 +11,12 @@ export default ({ FlowRouter, Meteor }) => {
   Meteor.startup(() => {
     const oldPage = FlowRouter._page;
     FlowRouter._page = function _page(...args) {
-      if (_.isObject(args[0])) {
+      if (isObject(args[0])) {
         args[0].click = false;
       }
       return oldPage.call(this, ...args);
     };
-    _.assign(FlowRouter._page, oldPage); // copy properties
+    assign(FlowRouter._page, oldPage); // copy properties
 
     FlowRouter.initialize();
   });

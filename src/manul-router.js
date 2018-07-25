@@ -1,4 +1,11 @@
-import _ from 'lodash';
+import flatten from 'lodash/flatten';
+
+import last from 'lodash/last';
+import isBoolean from 'lodash/isBoolean';
+
+import has from 'lodash/has';
+
+import isFunction from 'lodash/isFunction';
 
 import CreateNavItem from './create_nav_item';
 import disableFlowRouterClickDetection from './disable_flowrouter_click_detection';
@@ -24,7 +31,20 @@ export default class {
     this.globals = globals;
     this.Meteor = Meteor;
     this.createNavItem = CreateNavItem(this);
+    // path bad path escaping when setting params
+    // see https://github.com/kadirahq/flow-router/issues/601#issuecomment-327393055
+    this.FlowRouter.go = function (pathDef, fields, queryParams) {
+      let path = this.path(pathDef, fields, queryParams);
+      const useReplaceState = this.env.replaceState.get();
+      const badSlash = /%252F/g;
+      path = path.replace(badSlash, '/');
 
+      if (useReplaceState) {
+        this._page.replace(path);
+      } else {
+        this._page(path);
+      }
+    };
     disableFlowRouterClickDetection({ FlowRouter, Meteor });
   }
 
@@ -112,22 +132,21 @@ export default class {
   you can additionally pass a callback as the last param,
   this will be called after all onRoute-Callbacks has been resolved
 
-
   **/
   go(...args) {
     const nav = this._wrapAsNavItemIfneeded(args);
-    const allOnRoutes = _.flatten([nav.onRoute, this.globals.onRoute]);
+    const allOnRoutes = flatten([nav.onRoute, this.globals.onRoute]);
     allOnRoutes
       .reduce(
         (promiseChain, onRoute) =>
           promiseChain.then(
             () =>
               new Promise((next) => {
-                if (_.isFunction(onRoute)) {
+                if (isFunction(onRoute)) {
                   // onRoute can either return true/ false
                   // or call its second arg (next) with no value or true
                   const should = onRoute(nav, (s = true) => s && next());
-                  if (_.isBoolean(should) && should) {
+                  if (isBoolean(should) && should) {
                     next();
                   }
                 } else {
@@ -140,8 +159,8 @@ export default class {
       .then(() => {
         this.FlowRouter.go(nav.href);
         // check if last arg is a callback function and execute
-        if (_.isFunction(_.last(args))) {
-          _.last(args)();
+        if (isFunction(last(args))) {
+          last(args)();
         }
       });
   }
@@ -153,7 +172,13 @@ export default class {
     });
   }
 
-  _setLocaleByRoute({ params: { locale } }, redirect, stop) {
+  _setLocaleByRoute(
+    {
+      params: { locale },
+    },
+    redirect,
+    stop,
+  ) {
     if (!locale) {
       // do nothing, let it as default. usually this is root page
     } else if (this.i18n.supports(locale)) {
@@ -165,6 +190,7 @@ export default class {
   }
 
   redirect(...args) {
+    console.log('redirect', args);
     // on ios and android cordova reidrect throws a security error.
     // we skip this on both ios and android
     if (this.Meteor.isCordova) {
@@ -177,7 +203,7 @@ export default class {
 
   _wrapAsNavItemIfneeded(args) {
     const firstArg = args[0];
-    if (_.has(firstArg, 'href')) {
+    if (has(firstArg, 'href')) {
       // is already a nav item
       return args[0];
     }

@@ -8,13 +8,13 @@ var _extends2 = require('babel-runtime/helpers/extends');
 
 var _extends3 = _interopRequireDefault(_extends2);
 
-var _defer2 = require('lodash/defer');
+var _startsWith = require('lodash/startsWith');
 
-var _defer3 = _interopRequireDefault(_defer2);
+var _startsWith2 = _interopRequireDefault(_startsWith);
 
-var _startsWith2 = require('lodash/startsWith');
+var _defer = require('lodash/defer');
 
-var _startsWith3 = _interopRequireDefault(_startsWith2);
+var _defer2 = _interopRequireDefault(_defer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -36,7 +36,7 @@ exports.default = function (manulRouter) {
     var navItem = (0, _extends3.default)({}, nav, {
       href: path,
       active: active,
-      childActive: !active && (0, _startsWith3.default)(currentPath, path),
+      childActive: !active && (0, _startsWith2.default)(currentPath, path),
       label: label
     });
     var go = function go() {
@@ -49,7 +49,7 @@ exports.default = function (manulRouter) {
       if (navItem.active) {
         return;
       }
-      (0, _defer3.default)(go);
+      (0, _defer2.default)(go);
     };
 
     return (0, _extends3.default)({
@@ -57,7 +57,6 @@ exports.default = function (manulRouter) {
     }, navItem, {
       // overridable, if not falsy, spreading navItem after this does not handle this correctly
       onClick: nav.onClick || onClick
-
     });
   };
 };

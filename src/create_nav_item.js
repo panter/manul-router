@@ -1,20 +1,11 @@
-import _ from 'lodash';
+import startsWith from 'lodash/startsWith';
+import defer from 'lodash/defer';
 // use this from context()
 
 export default manulRouter => (nav) => {
-  const {
-    label,
-    routeName,
-    disabled,
-    params,
-    queryParams,
-  } = nav;
+  const { label, routeName, disabled, params, queryParams } = nav;
 
-  const path = (
-    routeName && !disabled ?
-    manulRouter.getPath(routeName, params, queryParams) :
-    null
-  );
+  const path = routeName && !disabled ? manulRouter.getPath(routeName, params, queryParams) : null;
 
   const currentPath = manulRouter.getCurrentPath();
   const active = currentPath === path;
@@ -22,7 +13,7 @@ export default manulRouter => (nav) => {
     ...nav,
     href: path,
     active,
-    childActive: !active && _.startsWith(currentPath, path),
+    childActive: !active && startsWith(currentPath, path),
     label,
   };
   const go = () => manulRouter.go(navItem);
@@ -33,7 +24,7 @@ export default manulRouter => (nav) => {
     if (navItem.active) {
       return;
     }
-    _.defer(go);
+    defer(go);
   };
 
   return {
@@ -41,6 +32,5 @@ export default manulRouter => (nav) => {
     ...navItem,
     // overridable, if not falsy, spreading navItem after this does not handle this correctly
     onClick: nav.onClick || onClick,
-
   };
 };

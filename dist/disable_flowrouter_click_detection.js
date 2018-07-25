@@ -4,13 +4,13 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _assign2 = require('lodash/assign');
+var _assign = require('lodash/assign');
 
-var _assign3 = _interopRequireDefault(_assign2);
+var _assign2 = _interopRequireDefault(_assign);
 
-var _isObject2 = require('lodash/isObject');
+var _isObject = require('lodash/isObject');
 
-var _isObject3 = _interopRequireDefault(_isObject2);
+var _isObject2 = _interopRequireDefault(_isObject);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -31,12 +31,12 @@ exports.default = function (_ref) {
         args[_key] = arguments[_key];
       }
 
-      if ((0, _isObject3.default)(args[0])) {
+      if ((0, _isObject2.default)(args[0])) {
         args[0].click = false;
       }
       return oldPage.call.apply(oldPage, [this].concat(args));
     };
-    (0, _assign3.default)(FlowRouter._page, oldPage); // copy properties
+    (0, _assign2.default)(FlowRouter._page, oldPage); // copy properties
 
     FlowRouter.initialize();
   });
