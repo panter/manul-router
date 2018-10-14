@@ -9,6 +9,7 @@ export default manulRouter => (nav) => {
 
   const currentPath = manulRouter.getCurrentPath();
   const active = currentPath === path;
+
   const navItem = {
     ...nav,
     href: path,

@@ -67,7 +67,7 @@ export default class {
   get the current path tracker-reactive
   **/
   getCurrentPath(reactive = true) {
-    if (reactive) this.FlowRouter.watchPathChange();
+    if (reactive && this.Meteor.isClient) this.FlowRouter.watchPathChange();
     return this.FlowRouter.current().path;
   }
 
@@ -75,7 +75,7 @@ export default class {
   get the current route defininition tracker-reactive
   **/
   getCurrentRoute(reactive = true) {
-    if (reactive) this.FlowRouter.watchPathChange();
+    if (reactive && this.Meteor.isClient) this.FlowRouter.watchPathChange();
     return this.FlowRouter.current().route;
   }
   /**

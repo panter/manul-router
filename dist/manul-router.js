@@ -126,7 +126,7 @@ var _class = function () {
     value: function getCurrentPath() {
       var reactive = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
-      if (reactive) this.FlowRouter.watchPathChange();
+      if (reactive && this.Meteor.isClient) this.FlowRouter.watchPathChange();
       return this.FlowRouter.current().path;
     }
 
@@ -139,7 +139,7 @@ var _class = function () {
     value: function getCurrentRoute() {
       var reactive = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
-      if (reactive) this.FlowRouter.watchPathChange();
+      if (reactive && this.Meteor.isClient) this.FlowRouter.watchPathChange();
       return this.FlowRouter.current().route;
     }
     /**

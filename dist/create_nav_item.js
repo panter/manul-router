@@ -33,6 +33,7 @@ exports.default = function (manulRouter) {
 
     var currentPath = manulRouter.getCurrentPath();
     var active = currentPath === path;
+
     var navItem = (0, _extends3.default)({}, nav, {
       href: path,
       active: active,
