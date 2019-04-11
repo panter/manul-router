@@ -13,7 +13,7 @@ export default ({ FlowRouter, Meteor }) => {
     Meteor.startup(() => {
       FlowRouter.initialize({
         page: {
-          link: false,
+          click: false,
         },
       });
     });

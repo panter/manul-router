@@ -29,7 +29,7 @@ exports.default = function (_ref) {
     Meteor.startup(function () {
       FlowRouter.initialize({
         page: {
-          link: false
+          click: false
         }
       });
     });
